@@ -1,11 +1,11 @@
 {
   "name": "@natural-rights/service",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Natural Rights Key Service",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/go1dfish/@natural-rights/service",
+  "repository": "git+ssh://git@gitlab.com/nodehaven/natural-rights-service.git",
   "license": "MIT",
   "keywords": [],
   "scripts": {
@@ -13,6 +13,7 @@
     "build": "run-s clean && run-p build:*",
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
+    "prepare": "run-s build",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:tslint": "tslint --fix --project .",
@@ -50,7 +51,13 @@
     "node": ">=8.9"
   },
   "dependencies": {
-    "sha.js": "^2.4.11"
+    "@natural-rights/common": "git+ssh://git@gitlab.com/nodehaven/natural-rights-common.git#v0.0.5",
+    "@notabug/gun-sear": "0.0.22",
+    "@types/body-parser": "^1.17.1",
+    "@types/express": "^4.17.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "node-lmdb": "^0.7.0"
   },
   "devDependencies": {
     "@bitjson/npm-scripts-info": "^1.0.0",
@@ -86,7 +93,8 @@
     }
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "semi": false
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
