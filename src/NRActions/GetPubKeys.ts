@@ -30,7 +30,7 @@ export class GetPubKeys extends ActionHandler {
     if (this.payload.kind === 'account') {
       const user = await service.db.getAccount(this.payload.id)
       if (!user) {
-        throw new Error('User does not exist')
+        throw new Error('Account does not exist')
       }
 
       return {
@@ -61,15 +61,15 @@ export class GetPubKeys extends ActionHandler {
         signPubKey: doc.id
       }
     } else if (this.payload.kind === 'client') {
-      const device = await service.db.getClient(this.payload.id)
-      if (!device) {
-        throw new Error('Device does not exist')
+      const client = await service.db.getClient(this.payload.id)
+      if (!client) {
+        throw new Error('Client does not exist')
       }
 
       return {
         ...this.payload,
-        cryptPubKey: device.cryptPubKey,
-        signPubKey: device.signPubKey
+        cryptPubKey: client.cryptPubKey,
+        signPubKey: client.signPubKey
       }
     }
 

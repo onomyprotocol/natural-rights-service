@@ -17,7 +17,9 @@ export class GetKeyPairs extends ActionHandler {
     this.payload = payload
   }
 
-  public async checkIsAuthorized(service: NaturalRightsLocalService): Promise<boolean> {
+  public async checkIsAuthorized(
+    service: NaturalRightsLocalService
+  ): Promise<boolean> {
     if (!this.accountId) {
       return false
     }
@@ -33,27 +35,27 @@ export class GetKeyPairs extends ActionHandler {
   public async execute(
     service: NaturalRightsLocalService
   ): Promise<NRGetKeyPairsResultPayload> {
-    const device = await service.db.getClient(this.clientId)
-    if (!device) {
-      throw new Error('Device does not exist')
+    const client = await service.db.getClient(this.clientId)
+    if (!client) {
+      throw new Error('Client does not exist')
     }
 
     if (this.payload.kind === 'account') {
       const user = await service.db.getAccount(this.payload.id)
       if (!user) {
-        throw new Error('User does not exist')
+        throw new Error('Account does not exist')
       }
 
       return {
         ...this.payload,
         cryptPubKey: user.cryptPubKey,
         encCryptPrivKey: await service.primitives.cryptTransform(
-          device.cryptTransformKey,
+          client.cryptTransformKey,
           user.encCryptPrivKey,
           service.signKeyPair!
         ),
         encSignPrivKey: await service.primitives.cryptTransform(
-          device.cryptTransformKey,
+          client.cryptTransformKey,
           user.encSignPrivKey,
           service.signKeyPair!
         ),
@@ -82,7 +84,7 @@ export class GetKeyPairs extends ActionHandler {
         ...this.payload,
         cryptPubKey: group.cryptPubKey,
         encCryptPrivKey: await service.primitives.cryptTransform(
-          device.cryptTransformKey,
+          client.cryptTransformKey,
           encCryptPrivKey,
           service.signKeyPair!
         ),

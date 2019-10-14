@@ -36,7 +36,7 @@ export class AddAdminToGroup extends ActionHandler {
     )
 
     if (!membership) {
-      throw new Error('No membership for user')
+      throw new Error('No membership for account')
     }
 
     await service.db.putMembership({
