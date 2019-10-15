@@ -24,7 +24,7 @@ import {
 } from '../NRActions'
 import { ActionHandler } from '../NRActions/ActionHandler'
 
-describe('Actions', () => {
+describe('NRActions', () => {
   let primitives: PREPrimitivesInterface
   let dbAdapter: NaturalRightsDatabaseAdapter
   let db: NaturalRightsDatabaseInterface
@@ -207,20 +207,34 @@ describe('Actions', () => {
     it('persists ClientRecord', async () => {
       const accountId = 'testAccountId'
       const clientId = 'testClientId'
-      const shared = {
-        accountId,
-        cryptPubKey: 'clientCryptPubKey',
-        cryptTransformKey: 'clientCryptTransformKey',
-        signPubKey: 'clientSignPubKey'
+      const cryptTransformKey = 'clientCryptTransformKey'
+      const cryptPubKey = 'clientCryptPubKey'
+      const signPubKey = 'clientSignPubKey'
+      const existingData = {
+        accountId: '',
+        cryptPubKey,
+        cryptTransformKey: '',
+        id: clientId,
+        signPubKey
       }
-      const payload = { ...shared, clientId }
-      const record = { ...shared, id: clientId }
+
       db.putClient = jest.fn().mockResolvedValue(undefined)
+      jest.spyOn(db, 'getClient').mockResolvedValue(existingData)
+
+      const payload = {
+        accountId,
+        clientId,
+        cryptTransformKey
+      }
 
       const handler = new AuthorizeClient(accountId, clientId, payload)
 
       expect(await handler.execute(service)).toEqual(payload)
-      expect(db.putClient).toBeCalledWith(record)
+      expect(db.putClient).toBeCalledWith({
+        ...existingData,
+        accountId,
+        cryptTransformKey
+      })
     })
   })
 

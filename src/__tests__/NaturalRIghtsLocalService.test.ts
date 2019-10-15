@@ -11,7 +11,7 @@ import { NaturalRightsLocalService } from '../NaturalRightsLocalService'
 import { CreateDocument } from '../NRActions'
 import { ActionHandler } from '../NRActions/ActionHandler'
 
-describe('LocalService', () => {
+describe('NaturalRightsLocalService', () => {
   let primitives: PREPrimitivesInterface
   let db: NaturalRightsDatabaseInterface
   let dbAdapter: NaturalRightsDatabaseAdapter
@@ -262,7 +262,7 @@ describe('LocalService', () => {
     it('processes actions in body if request authenticates', async () => {
       // @ts-ignore
       const authSpy = jest.spyOn(service, 'authenticate')
-      authSpy.mockResolvedValue(true)
+      authSpy.mockResolvedValue(accountId)
 
       // @ts-ignore
       const paSpy = jest.spyOn(service, 'processAction')
@@ -274,7 +274,11 @@ describe('LocalService', () => {
       })
       expect(service['authenticate']).toBeCalledWith(request)
       actions.map(action =>
-        expect(service['processAction']).toBeCalledWith(request, action)
+        expect(service['processAction']).toBeCalledWith(
+          request,
+          action,
+          accountId
+        )
       )
     })
   })
@@ -350,7 +354,11 @@ describe('LocalService', () => {
         success: false
       })
       expect(handler.checkIsAuthorized).toBeCalled()
-      expect(service['getActionHandler']).toBeCalledWith(request, action)
+      expect(service['getActionHandler']).toBeCalledWith(
+        request,
+        action,
+        accountId
+      )
       expect(handler.execute).not.toBeCalled()
     })
 
@@ -369,7 +377,11 @@ describe('LocalService', () => {
         success: true
       })
       expect(handler.checkIsAuthorized).toBeCalled()
-      expect(service['getActionHandler']).toBeCalledWith(request, action)
+      expect(service['getActionHandler']).toBeCalledWith(
+        request,
+        action,
+        accountId
+      )
       expect(handler.execute).toBeCalledWith(service)
     })
 
@@ -445,9 +457,7 @@ describe('LocalService', () => {
       db.getDocument = jest.fn().mockResolvedValue(document)
       db.getDocumentGrants = jest.fn().mockResolvedValue([])
 
-      expect(await service.getCredentials(accountId, documentId)).toEqual(
-        undefined
-      )
+      expect(await service.getCredentials(accountId, documentId)).toEqual(null)
       expect(db.getDocument).toBeCalledWith(documentId)
       expect(db.getDocumentGrants).toBeCalledWith(documentId)
     })
@@ -458,9 +468,7 @@ describe('LocalService', () => {
       db.getDocument = jest.fn().mockResolvedValue(undefined)
       db.getDocumentGrants = jest.fn().mockResolvedValue([])
 
-      expect(await service.getCredentials(accountId, documentId)).toEqual(
-        undefined
-      )
+      expect(await service.getCredentials(accountId, documentId)).toEqual(null)
       expect(db.getDocument).toBeCalledWith(documentId)
       expect(db.getDocumentGrants).toBeCalledWith(documentId)
     })

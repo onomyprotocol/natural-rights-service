@@ -6,7 +6,7 @@ const path = require('path')
 const rimraf = require('rimraf')
 const mkdirp = require('mkdirp')
 
-describe('LmdbDatabaseAdapter', () => {
+describe('NaturalRightsLmdbAdapter', () => {
   const testDirPath = path.resolve(__dirname, './testdata')
   let db: NaturalRightsLmdbAdapter
 
@@ -175,9 +175,9 @@ describe('LmdbDatabaseAdapter', () => {
         await db.put(Souls.grant(grant.documentId, grant.kind, grant.id), grant)
       }
 
-      expect(await db.getDocumentGrants(Souls.document(document.id))).toEqual(
-        expectedGrants
-      )
+      expect(
+        new Set(await db.getDocumentGrants(Souls.document(document.id)))
+      ).toEqual(new Set(expectedGrants))
     })
   })
 

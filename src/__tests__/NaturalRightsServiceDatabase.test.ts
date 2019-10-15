@@ -3,7 +3,7 @@ import {
   Souls
 } from '../NaturalRightsServiceDatabase'
 
-describe('Database', () => {
+describe('NaturalRightsServiceDatabase', () => {
   let db: NaturalRightsServiceDatabase
   let dbAdapter: NaturalRightsDatabaseAdapter
 
